@@ -24,14 +24,21 @@ if ($method == "POST") {
         $ngo_id = $input["ngo_id"];
         $ngoname = $input["ngoname"];
         
-        // Update with NGO information
-        $sql = "UPDATE donated_items SET status = ?, ngo_id = ?, ngoname = ? WHERE item_id = ?";
+        // Generate current timestamp for accepted_date
+        $accepted_date = date("Y-m-d H:i:s");
+        
+        // Update with NGO information and accepted_date
+        $sql = "UPDATE donated_items SET status = ?, ngo_id = ?, ngoname = ?, accepted_date = ? WHERE item_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
         
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sssi", $status, $ngo_id, $ngoname, $item_id);
+            mysqli_stmt_bind_param($stmt, "ssssi", $status, $ngo_id, $ngoname, $accepted_date, $item_id);
             if (mysqli_stmt_execute($stmt)) {
-                echo json_encode(["status" => "success", "message" => "Donation status and NGO details updated"]);
+                echo json_encode([
+                    "status" => "success", 
+                    "message" => "Donation status, NGO details, and accepted date updated",
+                    "accepted_date" => $accepted_date
+                ]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Failed to update donation status and NGO details"]);
             }
@@ -67,16 +74,23 @@ else if ($method == "PUT") {
 
     $user_id = $input["user_id"];
     $status = $input["status"];
-    $ngo_id = $input["ngo_id"]; // Fixed variable name
-    $ngoname = $input["ngoname"]; // Fixed variable name
+    $ngo_id = $input["ngo_id"];
+    $ngoname = $input["ngoname"];
+    
+    // Generate current timestamp for accepted_date
+    $accepted_date = date("Y-m-d H:i:s");
 
-    $sql = "UPDATE donated_items SET ngo_id = ?, ngoname = ?, status = ? WHERE user_id = ?";
+    $sql = "UPDATE donated_items SET ngo_id = ?, ngoname = ?, status = ?, accepted_date = ? WHERE user_id = ?";
     $stmt = mysqli_prepare($conn, $sql);
 
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "sssi", $ngo_id, $ngoname, $status, $user_id);
+        mysqli_stmt_bind_param($stmt, "ssssi", $ngo_id, $ngoname, $status, $accepted_date, $user_id);
         if (mysqli_stmt_execute($stmt)) {
-            echo json_encode(["status" => "success", "message" => "Donation status updated"]);
+            echo json_encode([
+                "status" => "success", 
+                "message" => "Donation status updated with accepted date",
+                "accepted_date" => $accepted_date
+            ]);
         } else {
             echo json_encode(["status" => "error", "message" => "Failed to update donation status"]);
         }
