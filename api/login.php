@@ -41,7 +41,7 @@ if ($method == "POST") {
     }
 
     // Check user table
-    $sql = "SELECT user_id, username, email, role_id, phonenumber, city, country FROM users WHERE email = ? AND password = ?";
+    $sql = "SELECT user_id, username, email, role_id, phonenumber, city, country, blocked FROM users WHERE email = ? AND password = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $email, $password);
     mysqli_stmt_execute($stmt);
@@ -57,7 +57,8 @@ if ($method == "POST") {
             "email" => $row["email"],
             "phonenumber" => $row["phonenumber"],
             "city" => $row["city"],
-            "country" => $row["country"]
+            "country" => $row["country"],
+            "blocked" => $row["blocked"],
         ]);
         exit();
     }

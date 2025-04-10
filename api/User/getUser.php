@@ -13,7 +13,7 @@ if ($method == "GET") {
         $userId = intval($_GET['user_id']); // Sanitize input
 
         // Query the user data
-        $stmt = $conn->prepare("SELECT user_id, username, email, phonenumber, city, country, created_at FROM users WHERE user_id = ?");
+        $stmt = $conn->prepare("SELECT user_id, username, email, phonenumber, city, country, created_at, blocked FROM users WHERE user_id = ?");
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
