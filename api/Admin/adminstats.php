@@ -24,7 +24,7 @@ if ( $method == "GET" ) {
         $ngoCount = mysqli_num_rows($ngoResult);
         $totalItemsCount = mysqli_num_rows($totalItemsResult);
         $finalDonationCount = mysqli_num_rows($finalDonationResult);
-
+        
         echo json_encode([
             "status" => "success",
             "userCount" => $userCount,

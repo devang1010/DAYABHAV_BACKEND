@@ -53,7 +53,6 @@ if ($method == "GET") {
 }
 
 // add requirements
-
 if ($method == "POST") {
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -66,6 +65,14 @@ if ($method == "POST") {
     $itemname = htmlspecialchars(strip_tags($data['item_name']));
     $quantity = intval($data['quantity']);  // Ensure it's an integer
     $ngoname = htmlspecialchars(strip_tags($data['ngoname']));
+    
+    // Get priority with default value of 1 if not set
+    $priority = isset($data['priority']) ? intval($data['priority']) : 1;
+    
+    // Validate priority (should be between 1 and 5)
+    if ($priority < 1 || $priority > 5) {
+        $priority = 1; // Set to default if invalid
+    }
 
     // Check if the NGO exists
     $stmt = $conn->prepare("SELECT ngo_id FROM ngos WHERE ngo_id = ?");
@@ -81,9 +88,9 @@ if ($method == "POST") {
     }
     $stmt->close();
 
-    // Add the requirement
-    $stmt = $conn->prepare("INSERT INTO requirements (ngo_id, item_name, quantity, ngoname) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isis", $ngoId, $itemname, $quantity, $ngoname);
+    // Add the requirement with priority
+    $stmt = $conn->prepare("INSERT INTO requirements (ngo_id, item_name, quantity, priority, ngoname) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("isiss", $ngoId, $itemname, $quantity, $priority, $ngoname);
 
     if ($stmt->execute()) {
         echo json_encode(["status" => "success", "message" => "Requirement added successfully"]);
@@ -140,7 +147,6 @@ if ($method == "DELETE") {
     $conn->close();
     exit();
 }
-
 
 // Handle unsupported methods
 http_response_code(405);
