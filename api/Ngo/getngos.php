@@ -26,8 +26,29 @@ if ($method == "GET") {
         }
 
         $stmt->close();
+    } elseif (isset($_GET['city'])) {
+        // Fetch NGOs by city
+        $city = $_GET['city'];
+        
+        $stmt = $conn->prepare("SELECT * FROM ngos WHERE address LIKE ?");
+        $searchTerm = "%$city%"; // Using LIKE for partial matching in address
+        $stmt->bind_param("s", $searchTerm);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $ngos = [];
+            while ($row = $result->fetch_assoc()) {
+                $ngos[] = $row;
+            }
+            echo json_encode(["status" => "success", "data" => $ngos]);
+        } else {
+            echo json_encode(["status" => "success", "data" => [], "message" => "No NGOs found in this city"]);
+        }
+        
+        $stmt->close();
     } else {
-        // Fetch all NGOs if no specific ID is provided
+        // Fetch all NGOs if no specific ID or city is provided
         $sql = "SELECT * FROM ngos";
         $result = mysqli_query($conn, $sql);
 
