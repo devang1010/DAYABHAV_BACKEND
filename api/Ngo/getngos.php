@@ -13,7 +13,7 @@ if ($method == "GET") {
         // Fetch a specific NGO
         $ngoId = intval($_GET['ngo_id']); // Sanitize input
 
-        $stmt = $conn->prepare("SELECT ngo_id, ngoname, email, phonenumber, address FROM ngos WHERE ngo_id = ?");
+        $stmt = $conn->prepare("SELECT ngo_id, ngoname, email, phonenumber, address, blocked FROM ngos WHERE ngo_id = ?");
         $stmt->bind_param("i", $ngoId);
         $stmt->execute();
         $result = $stmt->get_result();

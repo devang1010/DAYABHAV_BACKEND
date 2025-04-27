@@ -64,7 +64,7 @@ if ($method == "POST") {
     }
 
     // Check NGO table
-    $sql = "SELECT ngo_id, ngoname, email, role_id FROM ngos WHERE email = ? AND password = ?";
+    $sql = "SELECT ngo_id, ngoname, email, role_id, blocked FROM ngos WHERE email = ? AND password = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $email, $password);
     mysqli_stmt_execute($stmt);
@@ -78,6 +78,7 @@ if ($method == "POST") {
             "role_id" => $row["role_id"],
             "ngoname" => $row["ngoname"],
             "email" => $row["email"],
+            "blocked" => $row["blocked"],
         ]);
         exit();
     }
